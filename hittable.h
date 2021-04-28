@@ -7,7 +7,6 @@
 #define HITTABLE_H
 
 #include "ray.h"
-#include "material.h"
 
 class material;
 
@@ -36,13 +35,8 @@ struct hit_record
 class hittable {
 public:
     hittable() { };
-    hittable(material *m) : mat_ptr(m) {  }
-    virtual ~hittable() { delete mat_ptr; }
+    virtual ~hittable() { }
     virtual bool hit(const ray &r, float t_min, float t_max, hit_record &rec) const = 0;     
-
-public:
-    // material的指针移动到hittable里，否则global函数free_word无法正确清除指针
-    material *mat_ptr;
 };
 
 // 将front_face取反，这样原本设置的面向x，y，z的正方向的面现在被认为面向x，y，z的负方向

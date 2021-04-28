@@ -14,7 +14,7 @@ public:
         lens_radius = aperture / 2.0f;
         time0 = t0;
         time1 = t1;
-        float theta = vfov*((float)M_PI)/180.0f;
+        float theta = vfov*((float)MY_PI)/180.0f;
         float half_height = tan(theta/2.0f);
         float half_width = aspect * half_height;
         origin = lookfrom;

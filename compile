@@ -1,0 +1,1 @@
+g++ twoFlat.cpp aarect.cpp lambertian.cpp hittableList.cpp myUtility.h vec3.h ray.h pdf.h onb.h material.h  hittableList.h  hittable.h camera.h aarect.h -o twoFlat.exe 

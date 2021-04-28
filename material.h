@@ -5,6 +5,7 @@
 #include "hittable.h"
 #include "myUtility.h"
 #include "onb.h"
+#include "pdf.h"
 
 // 菲涅尔公式的Christophe Schlick近似，获得不同入射角下的反射率
 inline float schlick(float cosine, float ref_idx)
@@ -39,13 +40,14 @@ struct scatter_record {
     ray specular_ray;
     bool is_specular;
     vec3 attenuation;
+    pdf *pdf_ptr;
 };
 
 class material {
 public:
     virtual ~material(){}
 
-    virtual vec3 emitted(c) const = 0;
+    virtual vec3 emitted(const ray &r_in, const hit_record &rec, float u, float v, const vec3 &p) const = 0;
 
     // 这里认为光线传播的速度为无穷大所以接触时光线的时间与反射后的时间都等于光线最初发射的时间
     virtual bool scatter(const ray &r_in, const hit_record &rec, scatter_record &srec, default_random_engine &e) const = 0;
@@ -55,20 +57,14 @@ public:
 // 服从兰贝特分布的表面
 class lambertian : public material {
 public:
-    lambertian(vec3 &a) : albedo(a) {}
+    lambertian(vec3 a) : albedo(a) {}
 
     ~lambertian() { }
 
-    virtual vec3 emitted(const ray &r_in, const hit_record &rec, float u, float v, const vec3 &p);
+    virtual vec3 emitted(const ray &r_in, const hit_record &rec, float u, float v, const vec3 &p) const;
 
-    virtual bool scatter(
-            const ray &r_in, const hit_record &rec, scatter_record& srec, default_random_engine &e) 
-    const
-    {
-        srec.is_specular = false;
-        srec.attenuation = albedo;
-        return true;
-    }
+    virtual bool scatter(const ray &r_in, const hit_record &rec, scatter_record &srec, default_random_engine &e) const;
+
 
 public:
     vec3 albedo;

@@ -45,7 +45,8 @@
         "ostream": "cpp",
         "cmath": "cpp",
         "optional": "cpp",
-        "system_error": "cpp"
+        "system_error": "cpp",
+        "random": "cpp"
     },
     "C_Cpp.dimInactiveRegions": false // 效果效果比cpptools要好
 }
