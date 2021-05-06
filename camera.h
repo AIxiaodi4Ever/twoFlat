@@ -21,7 +21,7 @@ public:
         w = unit_vector(lookfrom - lookat);
         u = unit_vector(cross(vup, w));     //vup取任意不和w平行的向量即可
         v = cross(w, u);
-        lower_left_corner = origin  - half_width*focus_dist*u -half_height*focus_dist*v - focus_dist*w;
+        lower_left_corner = origin  - half_width*focus_dist*u - half_height*focus_dist*v - focus_dist*w;
         horizontal = 2.0f*half_width*focus_dist*u;
         vertical = 2.0f*half_height*focus_dist*v;
     }

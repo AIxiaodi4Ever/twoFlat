@@ -17,7 +17,7 @@ vec3 ray_color(const ray& r, const vec3& background, hittable** d_world, default
     vec3 cur_val = vec3(0, 0, 0);
     vec3 cur_attenuation = vec3(1.0, 1.0, 1.0);
     scatter_record srec;
-    for (int i = 0; i < 50; ++i) {
+    for (int i = 0; i < 100; ++i) {
         hit_record rec;
         if ((*d_world)->hit(cur_ray, 0.001f, FLT_MAX, rec)) {
             vec3 emitted = rec.mat_ptr->emitted(cur_ray, rec, rec.u, rec.v, rec.p);
@@ -34,23 +34,27 @@ vec3 ray_color(const ray& r, const vec3& background, hittable** d_world, default
             return cur_val;
         }
     }
+    //cerr << cur_val << endl;
     return cur_val;
 }
 
 void render(vec3 *fb, int max_x, int max_y, int ns, camera** cam, hittable** d_world, default_random_engine& e)
 {
     vec3 background(0, 0, 0);
-    vec3 col = vec3(0, 0, 0);
     for (int i = 0; i < max_x; ++i) {
         for (int j = 0; j < max_y; ++j) {
+            vec3 col = vec3(0, 0, 0);
             int pixel_index = (j * max_x) + i;
             for (int k = 0; k < ns; ++k) {
-                float u = float(i + random_float(e)) / float(max_x);
-                float v = float(j + random_float(e)) / float(max_y);
+                /*float u = float(i + random_float(e)) / float(max_x);
+                float v = float(j + random_float(e)) / float(max_y);*/
+                float u = float(i + 0.5f) / float(max_x);
+                float v = float(j + 0.5f) / float(max_y);
                 ray r = (*cam)->get_ray(u, v, e);
                 vec3 temp = ray_color(r, background, d_world, e);
                 col += temp;
             } //k
+            //cerr << col << endl;
             col /= float(ns);
             fb[pixel_index] = col;
         } //j
@@ -60,10 +64,10 @@ void render(vec3 *fb, int max_x, int max_y, int ns, camera** cam, hittable** d_w
 void creat_world(hittable** d_list, hittable** d_world, camera** cam, int nx, int ny, int num_shape, default_random_engine& e)
 {
     //material *attenu_dotfive = new lambertian(vec3(0.5f, 0.5f, 0.5f));
-    material *attenu_one = new lambertian(vec3(0.0, 0.5, 1.0));
+    material *attenu_test = new lambertian(vec3(0.0, 0.5, 1.0));
 
-    d_list[0] = new xy_rect(attenu_one, -10000, 10000, -10000, 10000, -1, 500);
-    d_list[1] = new flip_face(new xy_rect(attenu_one, -10000, 10000, -10000, 10000, 1, 500));
+    d_list[0] = new xy_rect(attenu_test, -10000, 10000, -10000, 10000, -1, 1000);
+    d_list[1] = new flip_face(new xy_rect(attenu_test, -10000, 10000, -10000, 10000, 1, 500));
 
     *d_world = new hittable_list(d_list, num_shape);
 
@@ -95,7 +99,8 @@ void free_world(hittable** d_world, camera** cam, vec3* fb)
 int main() 
 {
     default_random_engine e(time(0));
-    int nx = 10, ny = 10, ns = 5;
+
+    int nx = 10, ny = 10, ns = 10;
 
     // color array
     const int numPixels = nx * ny;
